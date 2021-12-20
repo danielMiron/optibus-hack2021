@@ -9,7 +9,11 @@ import Search from "./Search";
 
 const containerStyle = {
   width: "100%",
+<<<<<<< HEAD
   height: "800px",
+=======
+  height: "100%",
+>>>>>>> styles
 };
 
 const center = {

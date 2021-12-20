@@ -19,11 +19,11 @@ function App() {
     //     >
     //       Learn React
     //     </a>
-    //   </header> */}
 
     // </div>
-
-    <Map />
+    <div className="app">
+      <Map />
+    </div>
   );
 }
 
