@@ -9,11 +9,7 @@ import Search from "./Search";
 
 const containerStyle = {
   width: "100%",
-<<<<<<< HEAD
-  height: "800px",
-=======
   height: "100%",
->>>>>>> styles
 };
 
 const center = {
@@ -22,6 +18,10 @@ const center = {
 };
 
 const theme = [
+  {
+    featureType: "all",
+    stylers: [{ color: "#C0C0C0" }],
+  },
   { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
@@ -100,9 +100,19 @@ const theme = [
     elementType: "labels.text.stroke",
     stylers: [{ color: "#17263c" }],
   },
-]
+];
 
-let c = 1;
+function getDirectionLines({ routes }) {
+  const allSteps = routes?.[0]?.legs[0]?.steps || [];
+
+  const transitSteps = allSteps.filter(
+    (step) => step.travel_mode === "TRANSIT"
+  );
+  console.log("transitSteps", transitSteps);
+  const finaleData = transitSteps.map((step) => step.transit.line);
+  console.log("finaleData", finaleData);
+  return finaleData;
+}
 
 function Map() {
   const { isLoaded } = useJsApiLoader({
@@ -111,6 +121,7 @@ function Map() {
   });
 
   const [map, setMap] = useState(null);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
   const [route, setRoute] = useState(null);
   const [options, setOptions] = useState({
     destination: "",
@@ -128,14 +139,17 @@ function Map() {
   }, []);
 
   const onSearch = (origin, destination) => {
-    setOptions((prevState) => ({ ...prevState, origin, destination }));
+    console.log("onSearch!!!", { origin, destination });
+    setOptions({ travelMode: "TRANSIT", origin, destination });
+    setShouldUpdate(true);
   };
 
   const onResponse = useCallback(
     (res) => {
-      c && !route && setRoute(res);
+      shouldUpdate && setRoute(res);
+      setShouldUpdate(false);
     },
-    [route]
+    [shouldUpdate]
   );
   return isLoaded ? (
     <>
@@ -143,7 +157,7 @@ function Map() {
       <GoogleMap
         mapContainerStyle={containerStyle}
         options={{
-          styles: theme,
+          mapId: "5aef37aa44030772",
         }}
         center={center}
         zoom={10}
@@ -156,7 +170,7 @@ function Map() {
             // required
             options={options}
             // required
-            callback={onResponse}
+            callback={(e) => onResponse(e)}
             // optional
             onLoad={(directionsService) => {
               console.log(
@@ -176,6 +190,8 @@ function Map() {
 
         {route && (
           <DirectionsRenderer
+            // @ts-ignore
+            panel={document.getElementById("panel")}
             // required
             options={{
               directions: route,
@@ -197,6 +213,7 @@ function Map() {
           />
         )}
       </GoogleMap>
+      <div id="panel"></div>
     </>
   ) : (
     <></>

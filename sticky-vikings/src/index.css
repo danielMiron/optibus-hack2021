@@ -12,13 +12,23 @@ code {
     monospace;
 }
 
-
 .app {
- height: calc(100vh - 200px);
- width: 100vw;
+  height: calc(100vh - 200px);
+  width: 100vw;
 }
 
 #panel {
   height: 200px;
   overflow-y: scroll;
-} 
+  background-color: black;
+}
+.adp * {
+  background-color: black;
+  color: #3fa8ff !important;
+}
+.adp-warnbox,
+.adp-agencies,
+.adp-legal,
+.adp-placemark {
+  display: none;
+}
