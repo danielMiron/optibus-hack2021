@@ -7,6 +7,9 @@ import {
   Autocomplete,
 } from "@react-google-maps/api";
 import Search from "./Search";
+import Rating from "./Rating";
+import Box from "@mui/material/Box";
+import { Chip, Stack, Typography } from "@mui/material";
 
 const containerStyle = {
   width: "100%",
@@ -109,7 +112,13 @@ function getDirectionLines({ routes }) {
   console.log("finaleData", finaleData);
   return finaleData;
 }
-
+const mapOptions = {
+  mapId: "5aef37aa44030772",
+  center: {
+    lat: 32.0929,
+    lng: 34.8072,
+  },
+};
 function Map() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -118,9 +127,11 @@ function Map() {
   });
 
   const [map, setMap] = useState(null);
+  const [badRating, setBadRating] = useState(false);
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [route, setRoute] = useState(null);
+
   const [options, setOptions] = useState({
     destination: "",
     origin: "",
@@ -150,20 +161,23 @@ function Map() {
     [shouldUpdate]
   );
 
-  const center = {
-    lat: 32.0929,
-    lng: 34.8072,
+  const onRating = useCallback((rating) => {
+    if (rating < 3) {
+      setBadRating(true);
+    }
+  }, []);
+
+  const handleChipClick = () => {
+    setBadRating(false);
+    console.info("You clicked the Chip.");
   };
+
   return isLoaded ? (
     <>
       <Search onSearch={onSearch} />
       <GoogleMap
         mapContainerStyle={containerStyle}
-        options={{
-          mapId: "5aef37aa44030772",
-          center,
-        }}
-        center={center}
+        options={mapOptions}
         zoom={10}
         onLoad={onLoad}
         onUnmount={onUnmount}
@@ -218,7 +232,56 @@ function Map() {
         )}
       </GoogleMap>
 
-      <div id="panel"></div>
+      {route && <Rating onRating={onRating}></Rating>}
+      {route && (
+        <Box
+          sx={{
+            color: "#3fa8ff",
+            backgroundColor: "black",
+            height: "200px",
+            display: badRating ? "block" : "none",
+          }}
+        >
+          <Typography> What Can we do Better?</Typography>
+          <Stack
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            flexWrap="wrap"
+            spacing={2}
+          >
+            <Chip
+              sx={{ m: 2 }}
+              label="too crowded"
+              color="primary"
+              variant="outlined"
+              onClick={handleChipClick}
+            />
+            <Chip
+              sx={{ m: 2 }}
+              label="low frequency"
+              color="primary"
+              variant="outlined"
+              onClick={handleChipClick}
+            />
+            <Chip
+              sx={{ m: 2 }}
+              label="too many changeovers"
+              color="primary"
+              variant="outlined"
+              onClick={handleChipClick}
+            />
+            <Chip
+              sx={{ m: 2 }}
+              label="to long of a route"
+              color="primary"
+              variant="outlined"
+              onClick={handleChipClick}
+            />
+          </Stack>
+        </Box>
+      )}
+      <div id="panel" sx={badRating && { display: "none" }}></div>
     </>
   ) : (
     <></>
