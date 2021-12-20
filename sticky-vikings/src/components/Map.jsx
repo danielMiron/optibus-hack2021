@@ -17,7 +17,6 @@ const center = {
   lng: 34.807,
 };
 
-
 let c =1
 
 function Map() {
