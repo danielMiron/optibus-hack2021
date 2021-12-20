@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useCallback, useMemo} from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -17,35 +17,36 @@ const center = {
   lng: 34.807,
 };
 
-const destination = "Haifa";
-const origin = "שלמה אבן גבירול, Tel Aviv-Yafo";
+
 let c =1
+
 function Map() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyB0FG9qfrSxnOmQEeQUc5oHGHv5HD97MLg",
   });
 
-  const [map, setMap] = React.useState(null);
-  const [route, setRoute] = React.useState(null);
-
-  const onLoad = React.useCallback(function callback(map) {
+  const [map, setMap] = useState(null);
+  const [route, setRoute] = useState(null);
+const [destination, setDestination] = useState("Haifa");
+const [origin, setOrigin] = useState("שלמה אבן גבירול, Tel Aviv-Yafo");
+  const onLoad = useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
     setMap(map);
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = useCallback(function callback(map) {
     setMap(null);
   }, []);
 
-  const options = React.useMemo(() => ({
+  const options = useMemo(() => ({
     destination,
     origin,
     travelMode: "TRANSIT",
-  }), [])
+  }), [destination, origin])
 
-  const onResponse = React.useCallback((res) => {
+  const onResponse = useCallback((res) => {
     console.log({ destination, origin, res });
     c && !route && setRoute(res)
   },[route])
