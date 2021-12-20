@@ -4,17 +4,13 @@ import {
   useJsApiLoader,
   DirectionsService,
   DirectionsRenderer,
+  Autocomplete,
 } from "@react-google-maps/api";
 import Search from "./Search";
 
 const containerStyle = {
   width: "100%",
   height: "100%",
-};
-
-const center = {
-  lat: 32.0929,
-  lng: 34.807,
 };
 
 const theme = [
@@ -118,9 +114,11 @@ function Map() {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyB0FG9qfrSxnOmQEeQUc5oHGHv5HD97MLg",
+    libraries: ["places"],
   });
 
   const [map, setMap] = useState(null);
+
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [route, setRoute] = useState(null);
   const [options, setOptions] = useState({
@@ -129,8 +127,8 @@ function Map() {
     travelMode: "TRANSIT",
   });
   const onLoad = useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds();
-    map.fitBounds(bounds);
+    // const bounds = new window.google.maps.LatLngBounds();
+    // map.fitBounds(bounds);
     setMap(map);
   }, []);
 
@@ -151,6 +149,11 @@ function Map() {
     },
     [shouldUpdate]
   );
+
+  const center = {
+    lat: 32.0929,
+    lng: 34.8072,
+  };
   return isLoaded ? (
     <>
       <Search onSearch={onSearch} />
@@ -158,6 +161,7 @@ function Map() {
         mapContainerStyle={containerStyle}
         options={{
           mapId: "5aef37aa44030772",
+          center,
         }}
         center={center}
         zoom={10}
@@ -213,6 +217,7 @@ function Map() {
           />
         )}
       </GoogleMap>
+
       <div id="panel"></div>
     </>
   ) : (
