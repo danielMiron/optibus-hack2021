@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.4",
     "@mui/material": "^5.2.4",
     "@react-google-maps/api": "^2.7.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -44,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "components": "^0.1.0",
     "prettier": "^2.5.1"
   }
 }
